@@ -5,6 +5,7 @@ runs:
   using: composite
   steps:
     - name: "Get yarn cache directory path"
+      shell: bash
       id: yarn-cache-dir-path
       run: echo "dir=$(yarn config get cacheFolder)" >> ${{ runner.os == 'Windows' && '$env:GITHUB_ENV' || '$GITHUB_ENV' }}
 
@@ -23,4 +24,5 @@ runs:
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
 
     - name: "Installing dependencies"
+      shell: bash
       run: yarn
