@@ -1,0 +1,39 @@
+name: Build widget
+description: "Perform build or release operations based on input parameters"
+
+inputs:
+  mode:
+    description: "Specify the operation mode: build or release."
+    required: true
+    default: "build"
+
+  build-scope:
+    description: Specify the scope of build to run (all or changed).
+    required: true
+    default: "all"
+
+runs:
+  using: composite
+  steps:
+    - name: Determine mode
+      shell: bash
+      id: variables
+      run: |
+        echo "Selected mode: ${{ inputs.mode }}"
+        echo "command=$(if [ "${{ inputs.mode }}" = "build" ]; then echo 'build'; else echo 'release'; fi)" >> $GITHUB_OUTPUT
+        echo "Selected scope: ${{ inputs.build-scope }}"
+        echo "arg=$(if [ "${{ inputs.build-scope }}" = "changed" ]; then echo '--since'; else echo '--all'; fi)" >> $GITHUB_OUTPUT
+
+    - name: Run Build
+      shell: bash
+      run: yarn workspaces foreach ${{ steps.variables.outputs.arg }} --parallel run ${{ steps.variables.outputs.command }}
+
+    - name: Copy mpk files
+      shell: bash
+      run: yarn build:widgets
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@vb4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+      with:
+        name: build-output
+        path: dist/pluggableWidgets/
