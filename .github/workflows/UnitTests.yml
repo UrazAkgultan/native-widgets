@@ -18,9 +18,9 @@ jobs:
           fetch-depth: 0
 
       - name: "Setup Environment"
-        uses: ./github/actions/setup-environment
+        uses: ./.github/actions/setup-environment
 
       - name: "Running unit tests"
-        uses: ./github/actions/unit-tests
+        uses: ./.github/actions/unit-tests
         with:
           test-scope: "changed"
