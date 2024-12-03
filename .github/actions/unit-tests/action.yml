@@ -19,4 +19,6 @@ runs:
 
     - name: Run Unit Tests
       shell: bash
-      run: yarn workspaces foreach ${{ steps.variables.outputs.arg }} --parallel run test
+      run: |
+        echo "Selected test scope: ${{ steps.variables.outputs.arg }}"
+        yarn workspaces foreach ${{ steps.variables.outputs.arg }} --parallel run test
