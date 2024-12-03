@@ -10,6 +10,8 @@ import { AccordionGroup } from "./components/AccordionGroup";
 
 export type Props = AccordionProps<AccordionStyle>;
 
+// test
+
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
