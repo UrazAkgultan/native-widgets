@@ -16,9 +16,9 @@ runs:
       run: |
         echo "Selected test scope: ${{ inputs.test-scope }}"
         if [ "${{ inputs.test-scope }}" = "changed" ]; then
-          echo "arg=--since" >> $GITHUB_OUTPUT
+          echo "arg='--since'" >> $GITHUB_OUTPUT
         else
-          echo "arg=--all" >> $GITHUB_OUTPUT
+          echo "arg='--all'" >> $GITHUB_OUTPUT
     outputs:
       arg: ${{ steps.variables.outputs.arg }}
 
