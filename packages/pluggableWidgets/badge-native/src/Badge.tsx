@@ -8,6 +8,8 @@ import { executeAction, isAvailable } from "@mendix/piw-utils-internal";
 
 export type Props = BadgeProps<BadgeStyle>;
 
+// test
+
 export function Badge(props: BadgeProps<BadgeStyle>): ReactElement {
     const styles = flattenStyles(defaultBadgeStyle, props.style);
 
