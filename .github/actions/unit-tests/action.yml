@@ -19,8 +19,6 @@ runs:
           echo "arg='--since'" >> $GITHUB_OUTPUT
         else
           echo "arg='--all'" >> $GITHUB_OUTPUT
-    outputs:
-      arg: ${{ steps.variables.outputs.arg }}
 
       - name: Run Unit Tests
         shell: bash
