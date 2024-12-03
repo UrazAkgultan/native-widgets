@@ -1,0 +1,20 @@
+name: "Unit Tests"
+description: Run unit tests
+
+inputs:
+  test-scope:
+    description: Specify the scope of tests to run (all or changed).
+    required: true
+    default: "all"
+
+runs:
+  using: composite
+  steps:
+    - name: Determine Test Scope
+      id: variables
+      run: |
+        echo "Selected test scope: ${{ inputs.test-scope }}"
+        echo "arg=$(if [ "${{ inputs.test-scope }}" = "changed" ]; then echo '--since'; else echo '--all'; fi)" >> ${{ runner.os == 'Windows' && '$env:GITHUB_OUTPUT' || '$GITHUB_OUTPUT' }}
+
+      - name: Run Unit Tests
+        run: yarn workspaces foreach ${{ steps.variables.outputs.arg }} --parallel run test
