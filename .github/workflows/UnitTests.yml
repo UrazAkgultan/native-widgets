@@ -9,7 +9,7 @@ on:
 jobs:
   unit-tests:
     name: "Unit tests"
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: "Checking-out code"

@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     name: Build Widgets
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: "Checking-out code"
