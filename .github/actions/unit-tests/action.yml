@@ -15,10 +15,7 @@ runs:
       id: variables
       run: |
         echo "Selected test scope: ${{ inputs.test-scope }}"
-        if [ "${{ inputs.test-scope }}" = "changed" ]; then
-          echo "arg=--since" >> $GITHUB_OUTPUT
-        else
-          echo "arg=--all" >> $GITHUB_OUTPUT
+        echo "arg=$(if [ "${{ inputs.test-scope }}" = "changed" ] then echo '--since'; else echo '--all'; fi)" >> $GITHUB_OUTPUT
 
     - name: Run Unit Tests
       shell: bash
