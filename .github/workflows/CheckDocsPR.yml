@@ -43,3 +43,11 @@ jobs:
           # Fail the workflow
           echo "Docs PR link is missing in the description"
           exit 1
+          
+      - name: Remove Label if Found
+        if: steps.check-docs.outputs.docs_pr == 'found'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Remove missing-docs-pr label if it exists
+          gh pr edit ${{ github.event.pull_request.number }} --remove-label missing-docs-pr
