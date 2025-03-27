@@ -3,6 +3,8 @@ name: Check Docs PR
 on:
   pull_request:
     types: [opened, edited]
+  pull_request_review_comment:
+    types: [created]
 
 jobs:
   check-docs-pr:
@@ -13,7 +15,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Check Skip Docs Check Comment
+        id: check-skip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Get PR comments
+          COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[].body')
+          
+          # Check if skip-docs-check comment exists
+          if echo "$COMMENTS" | grep -q "skip-docs-check"; then
+            echo "skip_check=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip_check=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Check Docs PR Link
+        if: steps.check-skip.outputs.skip_check == 'false'
         id: check-docs
         env:
           GH_TOKEN: ${{ github.token }}
@@ -29,7 +47,7 @@ jobs:
           fi
       
       - name: Add Label if Missing
-        if: steps.check-docs.outputs.docs_pr == 'missing'
+        if: steps.check-docs.outputs.docs_pr == 'missing' && steps.check-skip.outputs.skip_check == 'false'
         env:
           GH_TOKEN: ${{ github.token }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
