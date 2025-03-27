@@ -11,6 +11,8 @@ jobs:
       pull-requests: write
       contents: read
     steps:
+      - uses: actions/checkout@v3
+      
       - name: Check Docs PR Link
         id: check-docs
         env:
