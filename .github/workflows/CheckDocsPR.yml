@@ -1,12 +1,15 @@
 name: Check Docs PR
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, edited]
 
 jobs:
   check-docs-pr:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
       - name: Check Docs PR Link
         id: check-docs
@@ -27,9 +30,13 @@ jobs:
         if: steps.check-docs.outputs.docs_pr == 'missing'
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
           # Add missing-docs-pr label
           gh pr edit ${{ github.event.pull_request.number }} --add-label missing-docs-pr
+          
+          # Add comment to PR
+          gh pr comment ${{ github.event.pull_request.number }} --body "Hi @$PR_AUTHOR, please add a link to the corresponding docs PR in the description."
           
           # Fail the workflow
           echo "Docs PR link is missing in the description"
