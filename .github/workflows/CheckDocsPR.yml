@@ -1,0 +1,36 @@
+name: Check Docs PR
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  check-docs-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Docs PR Link
+        id: check-docs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get PR description
+          PR_DESCRIPTION=$(gh pr view ${{ github.event.pull_request.number }} --json body --jq .body)
+          
+          # Check if docs PR link exists
+          if echo "$PR_DESCRIPTION" | grep -q "https://github\.com/mendix/docs/pull"; then
+            echo "docs_pr=found" >> $GITHUB_OUTPUT
+          else
+            echo "docs_pr=missing" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Add Label if Missing
+        if: steps.check-docs.outputs.docs_pr == 'missing'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Add missing-docs-pr label
+          gh pr edit ${{ github.event.pull_request.number }} --add-label missing-docs-pr
+          
+          # Fail the workflow
+          echo "Docs PR link is missing in the description"
+          exit 1 
