@@ -22,7 +22,7 @@ jobs:
           PR_DESCRIPTION=$(gh pr view ${{ github.event.pull_request.number }} --json body --jq .body)
           
           # Check if docs PR link exists
-          if echo "$PR_DESCRIPTION" | grep -q "https://github\.com/mendix/docs/pull"; then
+          if echo "$PR_DESCRIPTION" | grep -q "https://github.com/mendix/docs/pull"; then
             echo "docs_pr=found" >> $GITHUB_OUTPUT
           else
             echo "docs_pr=missing" >> $GITHUB_OUTPUT
