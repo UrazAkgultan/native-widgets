@@ -1,7 +1,7 @@
 name: Check Docs PR
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, edited]
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
       - name: Check Docs PR Link
         id: check-docs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           # Get PR description
           PR_DESCRIPTION=$(gh pr view ${{ github.event.pull_request.number }} --json body --jq .body)
@@ -26,7 +26,7 @@ jobs:
       - name: Add Label if Missing
         if: steps.check-docs.outputs.docs_pr == 'missing'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           # Add missing-docs-pr label
           gh pr edit ${{ github.event.pull_request.number }} --add-label missing-docs-pr
