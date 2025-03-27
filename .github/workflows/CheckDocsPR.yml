@@ -62,8 +62,8 @@ jobs:
           echo "Docs PR link is missing in the description"
           exit 1
           
-      - name: Remove Label if Found
-        if: steps.check-docs.outputs.docs_pr == 'found'
+      - name: Remove Label if Found or Skip Check
+        if: steps.check-docs.outputs.docs_pr == 'found' || steps.check-skip.outputs.skip_check == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
