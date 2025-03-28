@@ -46,6 +46,21 @@ jobs:
             echo "docs_pr=missing" >> $GITHUB_OUTPUT
           fi
       
+      - name: Check Existing Docs Check Comment
+        id: check-existing-comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Get PR comments
+          COMMENTS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[].body')
+          
+          # Check if our docs check comment exists
+          if echo "$COMMENTS" | grep -q "please add a link to the corresponding docs PR"; then
+            echo "has_comment=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_comment=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Add Label if Missing
         if: steps.check-docs.outputs.docs_pr == 'missing' && steps.check-skip.outputs.skip_check == 'false'
         env:
@@ -55,8 +70,10 @@ jobs:
           # Add missing-docs-pr label
           gh pr edit ${{ github.event.pull_request.number }} --add-label missing-docs-pr
           
-          # Add comment to PR
-          gh pr comment ${{ github.event.pull_request.number }} --body "Hi @$PR_AUTHOR, please add a link to the corresponding docs PR in the description."
+          # Add comment to PR only if it doesn't exist
+          if [ "${{ steps.check-existing-comment.outputs.has_comment }}" = "false" ]; then
+            gh pr comment ${{ github.event.pull_request.number }} --body "Hi @$PR_AUTHOR, please add a link to the corresponding docs PR in the description. If documentation update is not required for this PR, you can add a comment with 'skip-docs-check' to skip this check."
+          fi
           
           # Fail the workflow
           echo "Docs PR link is missing in the description"
