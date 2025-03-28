@@ -18,7 +18,7 @@ widgets on Native Mobile Resources module.
 
 ## Included nanoflow actions
 
-| Category       | Action                                |
+| Category       | Action                                |asdasd
 | :------------- | :------------------------------------ |
 | Authentication | Biometric authentication              |
 |                | Is biometric authentication supported |
